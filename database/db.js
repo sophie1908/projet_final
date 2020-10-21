@@ -1,3 +1,7 @@
+// Sequelize est un ORM
+// ORM : Un mapping objet-relationnel 
+// est un type de programme informatique qui se place en interface entre un programme applicatif 
+// et une base de données relationnelle pour simuler une base de données orientée objet.
 const Sequelize = require("sequelize");
 
 const db = {};
@@ -47,6 +51,8 @@ db.requier = require("../models/Requier")(dbinfo, Sequelize);
 db.user = require("../models/User")(dbinfo, Sequelize);
 db.utiliser = require("../models/Utiliser")(dbinfo, Sequelize);
 
+
+
 /*
  * Les quatre types d’associations disponibles en Sequelize
  * 
@@ -76,7 +82,7 @@ db.materiel.belongsToMany(db.user, { through: 'posseder', foreignKey: "materielI
 db.user.belongsToMany(db.allergene, { through: 'avoir', foreignKey: "userId" });
 db.allergene.belongsToMany(db.user, { through: 'avoir', foreignKey: "allergeneId" });
 
-db.parametre.hasOne(db.user, { foreignkey: "userId" });
+
 db.abonnement.hasOne(db.user, { foreignkey: "userId" });
 db.paiement.hasOne(db.user, { foreignkey: "userId" });
 

@@ -1,6 +1,20 @@
+/* Node est le runtime qui permet d'écrire toutes nos tâches côté serveur,
+ en JavaScript, telles que la logique métier, 
+ la persistance des données et la sécurité. 
+ Node ajoute également des fonctionnalités que le JavaScript du 
+ navigateur standard ne possède pas, comme par exemple 
+ l'accès au système de fichiers local. */
+
+
+
+//Express.js est un framework pour construire des applications 
+//web basées sur Node.js
 var express = require("express");
+//
 var router = express.Router();
+// fonction de hachage
 var bcrypt = require("bcrypt");
+//permet l'échange sécurisé de tokens entre plusieurs parties.
 var jwt = require("jsonwebtoken");
 var db = require("../database/db");
 
@@ -48,6 +62,29 @@ router.post('/register', (req, res) => {
         })
 });
 
+
+
+router.post("/registerparam1", (req, res) => {
+    console.log(req.body);
+    db.user.findOne({
+            where: { email: req.body.email }
+        })
+        .then(user => {
+            user.update({
+                    personne: req.body.personne,
+                    petit_dej: req.body.petit_dej,
+                    dej: req.body.dej,
+                    diner: req.body.diner
+                })
+                .then(user => {
+                    res.json(user)
+                })
+        })
+        .catch(err => {
+            res.json({ error: err })
+        })
+})
+
 router.put("/update/:id", (req, res) => {
     db.user.findOne({
             where: { id: req.params.id }
@@ -61,6 +98,7 @@ router.put("/update/:id", (req, res) => {
                     res.status(402).send("impossible de mettre à jour votre compte" + err);
                 })
         })
+
 });
 
 router.post("/login", (req, res) => {
@@ -85,5 +123,70 @@ router.post("/login", (req, res) => {
             res.json("test error" + err)
         })
 });
+
+router.post("/envoimail", (req, res) => {
+    var randtoken = require('rand-token');
+    var token = randtoken.generate(16);
+    db.user.findOne({
+            where: { email: req.body.email }
+        })
+        /* utilisateur: va stocker dans  
+        ( variable déclarer toute seule) ce qui va retrouver par rapport au findOne */
+        /* => : fonction anonyme ( qui prend en parametre la variable utilisateur) */
+        .then((user) => {
+            console.log(user);
+            /* si j'ai trouver l'utilisateur */
+            if (user) {
+                user.update({
+                    forget: token
+                }).then(item => {
+                    /* déclare une constance nodemailer qui inclus le module nodemailer */
+                    const nodemailer = require("nodemailer");
+                    /* createTransport({}) : fonction predefini de 
+                    nodemailer qui permet de créer un transporter */
+                    const transporter = nodemailer.createTransport({
+                        host: "smtp.gmail.com",
+                        port: '587',
+                        /* authentification */
+                        auth: {
+                            user: "digitalweb117@gmail.com",
+                            pass: "Pattedepie75",
+                        },
+                    });
+
+                    const mailOptions = {
+                        from: "digitalweb117@gmail.com",
+                        to: item.email,
+                        subject: "Mot de passe oublié",
+                        text: "Réinitialiser votre mot de passe",
+                        html: "<a href=http://localhost:8080/myreinitialiser +item.forget>clicker ici pour réinitialiser votre mot de passe</a>"
+                    };
+                    /* transporter: constante que j'ai 
+                    déclaré au dessus qui contient le transporter */
+
+                    /* transporter.sendMail : fonction de transporter qui 
+                    permet d'envoyer le mail avec des options */
+
+                    /* error, info : parametre qui recupere si il y a une erreur ou les infos */
+                    transporter.sendMail(mailOptions, function(error, info) {
+                        if (error) {
+                            return res.send(error);
+
+                        } else {
+                            return res.send("Email sent : " + info.response);
+                        }
+                    });
+                })
+            }
+        });
+})
+router.post("/updatePassword", (req, res) => {
+    db.user.findOne({
+            where: { email: req.body.email }
+        })
+        .then(user => {
+            user.update(req.body)
+        })
+})
 
 module.exports = router;

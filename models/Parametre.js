@@ -1,35 +1,31 @@
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
         "parametre", {
-            id: {
-                type: Sequelize.DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true
-            },
-            jour: {
+            petitdej: {
                 type: Sequelize.DataTypes.TINYINT(1),
                 allowNull: false
             },
-            repas: {
+            dej: {
                 type: Sequelize.DataTypes.TINYINT(1),
                 allowNull: false
             },
-            temps: {
+            diner: {
+                type: Sequelize.DataTypes.TINYINT(1),
+                allowNull: false
+            },
+            temps_ptidej: {
                 type: Sequelize.DataTypes.TINYINT(2),
                 allowNull: false
             },
-            adulte: {
-                type: Sequelize.DataTypes.TINYINT(1),
-                allowNull: true
+            temps_dej: {
+                type: Sequelize.DataTypes.TINYINT(2),
+                allowNull: false
             },
-            enfant: {
-                type: Sequelize.DataTypes.TINYINT(1),
-                allowNull: true
+            temps_diner: {
+                type: Sequelize.DataTypes.TINYINT(2),
+                allowNull: false
             },
-            budget_semaine: {
-                type: Sequelize.DataTypes.DECIMAL(5),
-                allowNull: true
-            },
+
 
 
         }, {

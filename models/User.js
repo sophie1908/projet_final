@@ -46,6 +46,24 @@ module.exports = (dbinfo, Sequelize) => {
                 type: Sequelize.DataTypes.TEXT,
                 allowNull: true
             },
+            personne: {
+                type: Sequelize.DataTypes.TINYINT(1),
+                allowNull: true
+            },
+            petit_dej: {
+                type: Sequelize.DataTypes.TINYINT(1),
+                allowNull: true
+            },
+            dej: {
+                type: Sequelize.DataTypes.TINYINT(1),
+                allowNull: true
+            },
+            diner: {
+                type: Sequelize.DataTypes.TINYINT(1),
+                allowNull: true
+            },
+
+
 
             forget: {
                 type: Sequelize.DataTypes.STRING(60),
