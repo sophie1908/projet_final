@@ -20,6 +20,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: false }));
 
 app.use("/user", require('./router/user'));
+app.use("/pref_alimentaire", require('./router/pref_alimentaire'));
 
 
 app.listen(port, () => {

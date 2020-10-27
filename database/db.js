@@ -32,7 +32,6 @@ db.cat_recette = require("../models/Cat_recette")(dbinfo, Sequelize);
 db.choisir = require("../models/Choisir")(dbinfo, Sequelize);
 db.composer = require("../models/Composer")(dbinfo, Sequelize);
 db.contenir = require("../models/Contenir")(dbinfo, Sequelize);
-db.definir = require("../models/Definir")(dbinfo, Sequelize);
 db.facture = require("../models/Facture")(dbinfo, Sequelize);
 db.image = require("../models/Image")(dbinfo, Sequelize);
 db.inclure = require("../models/Inclure")(dbinfo, Sequelize);
@@ -50,6 +49,7 @@ db.recette = require("../models/Recette")(dbinfo, Sequelize);
 db.requier = require("../models/Requier")(dbinfo, Sequelize);
 db.user = require("../models/User")(dbinfo, Sequelize);
 db.utiliser = require("../models/Utiliser")(dbinfo, Sequelize);
+db.fiche_recette = require("../models/Fiche_Recette")(dbinfo, Sequelize);
 
 
 
@@ -85,6 +85,7 @@ db.allergene.belongsToMany(db.user, { through: 'avoir', foreignKey: "allergeneId
 
 db.abonnement.hasOne(db.user, { foreignkey: "userId" });
 db.paiement.hasOne(db.user, { foreignkey: "userId" });
+db.fiche_recette.hasOne(db.recette, { foreignKey: 'recetteId' });
 
 db.liste_course.hasMany(db.user, { foreignKey: "userId" });
 db.liste_recette.hasMany(db.user, { foreignKey: "userId" });

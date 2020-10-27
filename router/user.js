@@ -23,38 +23,45 @@ process.env.SECRET_KEY = 'secret';
 
 router.post('/register', (req, res) => {
     console.log(req.body);
+
+
     db.user.findOne({
             where: { email: req.body.email }
         })
         .then(user => {
             if (!user) {
-                password = bcrypt.hashSync(req.body.password, 10);
-                db.user.create({
-                        nom: req.body.nom,
-                        prenom: req.body.prenom,
-                        date_de_naissance: req.body.date_de_naissance,
-                        adresse: req.body.adresse,
-                        complement_adresse: req.body.complement_adresse,
-                        cp: req.body.cp,
-                        ville: req.body.ville,
-                        email: req.body.email,
-                        password: password,
-                        confirm_password: password,
+                if ((req.body.email != '') && (req.body.password != '')) {
+                    password = bcrypt.hashSync(req.body.password, 10);
+                    db.user.create({
+                            nom: req.body.nom,
+                            prenom: req.body.prenom,
+                            date_de_naissance: req.body.date_de_naissance,
+                            adresse: req.body.adresse,
+                            complement_adresse: req.body.complement_adresse,
+                            cp: req.body.cp,
+                            ville: req.body.ville,
+                            email: req.body.email,
+                            password: password,
+                            confirm_password: password,
 
-                    })
-                    .then(useritem => {
-                        let token = jwt.sign(useritem.dataValues,
-                            process.env.SECRET_KEY, {
-                                expiresIn: 1440
-                            });
+                        })
+                        .then(useritem => {
+                            let token = jwt.sign(useritem.dataValues,
+                                process.env.SECRET_KEY, {
+                                    expiresIn: 1440
+                                });
 
-                        res.status(200).json({ token: token })
-                    })
-                    .catch(err => {
-                        res.send(err)
-                    })
+                            res.status(200).json({ token: token })
+                        })
+                        .catch(err => {
+                            res.send(err)
+                        })
+                } else {
+                    res.json({ msg: "Mot de passe ou e-mail non renseigné" });
+                }
+
             } else {
-                res.json("utilisateur déja dans la base");
+                res.json("Cette e-mail est déjà utilisé");
             }
         })
         .catch(err => {
@@ -83,14 +90,70 @@ router.post("/registerparam1", (req, res) => {
         .catch(err => {
             res.json({ error: err })
         })
-})
+});
+
+router.post("/registerparam1", (req, res) => {
+    console.log(req.body);
+    db.user.findOne({
+            where: { email: req.body.email }
+        })
+        .then(user => {
+            user.update({
+                    personne: req.body.personne,
+                    petit_dej: req.body.petit_dej,
+                    dej: req.body.dej,
+                    diner: req.body.diner
+                })
+                .then(user => {
+                    res.json(user)
+                })
+        })
+        .catch(err => {
+            res.json({ error: err })
+        })
+});
+
+router.post("/registerfinal", (req, res) => {
+    console.log(req.body);
+    var idpref = null;
+    db.user.findOne({
+            where: { email: req.body.email }
+        })
+        .then(user => {
+            db.pref_alimentaire.findOne({
+                    where: { nom: req.body.nom }
+                })
+                .then((pref) => {
+                    idpref = pref.id;
+                    user.addpref_alimentaire(idpref)
+                        .then(user => {
+                            res.json(user)
+                        })
+                })
+                .catch(err => {
+                    res.json({ error: err })
+                })
+        })
+
+});
+
+
+
 
 router.put("/update/:id", (req, res) => {
     db.user.findOne({
             where: { id: req.params.id }
         })
         .then(user => {
-            user.update(req.body)
+            user.update({
+                    nom: req.body.nom,
+                    prenom: req.body.prenom,
+                    date_de_naissance: req.body.date_de_naissance,
+                    adresse: req.body.adresse,
+                    complement_adresse: req.body.complement_adresse,
+                    cp: req.body.cp,
+                    ville: req.body.ville,
+                })
                 .then(useritem => {
                     res.status(200).json(useritem);
                 })
@@ -138,6 +201,7 @@ router.post("/envoimail", (req, res) => {
             /* si j'ai trouver l'utilisateur */
             if (user) {
                 user.update({
+                    /* stock le token temporaire dans la propriété forget de user */
                     forget: token
                 }).then(item => {
                     /* déclare une constance nodemailer qui inclus le module nodemailer */
@@ -159,7 +223,8 @@ router.post("/envoimail", (req, res) => {
                         to: item.email,
                         subject: "Mot de passe oublié",
                         text: "Réinitialiser votre mot de passe",
-                        html: "<a href=http://localhost:8080/myreinitialiser +item.forget>clicker ici pour réinitialiser votre mot de passe</a>"
+                        /* envoie du mail plus du token temporaire qui est stocké dans forget */
+                        html: "<a href=http://localhost:8080/myreinitialiser/" + item.forget + ">clicker ici pour réinitialiser votre mot de passe</a>"
                     };
                     /* transporter: constante que j'ai 
                     déclaré au dessus qui contient le transporter */
@@ -179,14 +244,46 @@ router.post("/envoimail", (req, res) => {
                 })
             }
         });
-})
-router.post("/updatePassword", (req, res) => {
+});
+router.post("/updatepassword", (req, res) => {
     db.user.findOne({
-            where: { email: req.body.email }
+            /* récupère le token temporaire qui est stocké dans le user.forget */
+            where: { forget: req.body.forget }
+        }).then(user => {
+            if (user) {
+                /* Créer deux constante afin de stocké password et confirm password afin de les comparer */
+                const pwd = req.body.password;
+                const confirmpwd = req.body.confirm_password;
+                /* si les données des deux constantes sont identique */
+                if (pwd === confirmpwd) {
+                    /* stock dans la const hash le nouveau password et l'emcrypte 10 fois */
+                    const hash = bcrypt.hashSync(req.body.password, 10);
+                    /* stock en local dans body.password le nouveau password qui est stocker dans la const hash */
+                    req.body.password = hash;
+                    /* envoi dans la base de données */
+                    user.update({
+                            password: req.body.password,
+                            forget: null,
+                            confirm_password: null
+                        })
+                        .then(() => {
+                            res.json({
+                                message: "Mot de passe mis à jour"
+                            })
+                        })
+                        .catch(err => {
+                            res.json(err);
+                        })
+                } else {
+                    res.json("Mot de passe différent")
+                }
+            } else {
+                res.json("link not validé");
+            }
         })
-        .then(user => {
-            user.update(req.body)
+        .catch(err => {
+            res.json(err)
         })
-})
+});
 
 module.exports = router;

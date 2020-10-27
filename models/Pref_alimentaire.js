@@ -6,13 +6,8 @@ module.exports = (dbinfo, Sequelize) => {
                 primaryKey: true,
                 autoIncrement: true
             },
-            type: {
-                type: Sequelize.DataTypes.TINYINT(1),
-                allowNull: false
-            },
-
-            image: {
-                type: Sequelize.DataTypes.TEXT,
+            nom: {
+                type: Sequelize.DataTypes.STRING(45),
                 allowNull: false
             },
 
