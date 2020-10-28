@@ -4,16 +4,19 @@ module.exports = (dbinfo, Sequelize) => {
             id: {
                 type: Sequelize.DataTypes.INTEGER,
                 primaryKey: true,
-                autoIncrement: true
+                autoIncrement: true,
             },
             nom: {
                 type: Sequelize.DataTypes.STRING(45),
-                allowNull: false
+                allowNull: false,
             },
-
+            image: {
+                type: Sequelize.DataTypes.STRING(45),
+                allowNull: false,
+            },
         }, {
             timestamps: true,
-            underscored: true
+            underscored: true,
         }
     );
 };

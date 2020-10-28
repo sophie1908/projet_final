@@ -1,5 +1,5 @@
 /**
- * ExpressJS est une librairie qui permet de créer 
+ * ExpressJS est une librairie qui permet de créer
  * une application Web plus simplement qu'avec l'objet http directement.
  */
 const express = require("express");
@@ -19,9 +19,8 @@ app.use(bodyparser.json());
 
 app.use(bodyparser.urlencoded({ extended: false }));
 
-app.use("/user", require('./router/user'));
-app.use("/pref_alimentaire", require('./router/pref_alimentaire'));
-
+app.use("/user", require("./router/user"));
+app.use("/pref_alimentaire", require("./router/pref_alimentaire"));
 
 app.listen(port, () => {
     console.log(`It's ok darling http://${hostname}:${port}`);

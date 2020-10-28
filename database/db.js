@@ -1,24 +1,25 @@
 // Sequelize est un ORM
-// ORM : Un mapping objet-relationnel 
-// est un type de programme informatique qui se place en interface entre un programme applicatif 
+// ORM : Un mapping objet-relationnel
+// est un type de programme informatique qui se place en interface entre un programme applicatif
 // et une base de données relationnelle pour simuler une base de données orientée objet.
 const Sequelize = require("sequelize");
 
 const db = {};
 
-const dbinfo = new Sequelize("cook", "root", "", {
+const dbinfo = new Sequelize("cook", "root", "root", {
     host: "localhost",
     dialect: "mysql",
-    port: 3308,
+    port: 3306,
     pool: {
         max: 5,
         min: 0,
-    }
+    },
 });
 
-dbinfo.authenticate()
+dbinfo
+    .authenticate()
     .then(() => {
-        console.log("Connecté")
+        console.log("Connecté");
     })
     .catch((err) => {
         console.error("non connecté", err);
@@ -51,49 +52,73 @@ db.user = require("../models/User")(dbinfo, Sequelize);
 db.utiliser = require("../models/Utiliser")(dbinfo, Sequelize);
 db.fiche_recette = require("../models/Fiche_Recette")(dbinfo, Sequelize);
 
-
-
 /*
  * Les quatre types d’associations disponibles en Sequelize
- * 
- * BelongsTo     : les associations sont des associations où la clé étrangère 
+ *
+ * BelongsTo     : les associations sont des associations où la clé étrangère
  * pour la relation 1-à-1 existe sur le modèle source.
- * 
- * HasOne        : les associations sont des associations où la clé étrangère 
+ *
+ * HasOne        : les associations sont des associations où la clé étrangère
  * pour la relation 1-à-1 existe sur le modèle cible.
- * 
- * HasMany       : les associations connectent une source avec plusieurs cibles. 
+ *
+ * HasMany       : les associations connectent une source avec plusieurs cibles.
  * Cependant, les cibles sont à nouveau connectées à une source spécifique.
- * 
- * BelongsToMany : les associations sont utilisées pour connecter des sources 
- * avec plusieurs cibles. En outre, les cibles peuvent également avoir des 
+ *
+ * BelongsToMany : les associations sont utilisées pour connecter des sources
+ * avec plusieurs cibles. En outre, les cibles peuvent également avoir des
  * connexions vers plusieurs sources.
  */
 
-db.user.belongsToMany(db.cat_recette, { through: 'choisir', foreignKey: "userId" });
-db.cat_recette.belongsToMany(db.user, { through: 'choisir', foreignKey: "cat_recetteId" });
+db.user.belongsToMany(db.cat_recette, {
+    through: "choisir",
+    foreignKey: "userId",
+});
+db.cat_recette.belongsToMany(db.user, {
+    through: "choisir",
+    foreignKey: "cat_recetteId",
+});
 
-db.user.belongsToMany(db.pref_alimentaire, { through: 'definir', foreignKey: "userId" });
-db.pref_alimentaire.belongsToMany(db.user, { through: 'definir', foreignKey: "pref_alimentaireId" });
+db.user.belongsToMany(db.pref_alimentaire, {
+    through: "definir",
+    foreignKey: "userId",
+});
+db.pref_alimentaire.belongsToMany(db.user, {
+    through: "definir",
+    foreignKey: "pref_alimentaireId",
+});
 
-db.user.belongsToMany(db.materiel, { through: 'posseder', foreignKey: "userId" });
-db.materiel.belongsToMany(db.user, { through: 'posseder', foreignKey: "materielId" });
+db.user.belongsToMany(db.materiel, {
+    through: "posseder",
+    foreignKey: "userId",
+});
+db.materiel.belongsToMany(db.user, {
+    through: "posseder",
+    foreignKey: "materielId",
+});
 
-db.user.belongsToMany(db.allergene, { through: 'avoir', foreignKey: "userId" });
-db.allergene.belongsToMany(db.user, { through: 'avoir', foreignKey: "allergeneId" });
-
+db.user.belongsToMany(db.allergene, { through: "avoir", foreignKey: "userId" });
+db.allergene.belongsToMany(db.user, {
+    through: "avoir",
+    foreignKey: "allergeneId",
+});
 
 db.abonnement.hasOne(db.user, { foreignkey: "userId" });
 db.paiement.hasOne(db.user, { foreignkey: "userId" });
-db.fiche_recette.hasOne(db.recette, { foreignKey: 'recetteId' });
+db.fiche_recette.hasOne(db.recette, { foreignKey: "recetteId" });
 
 db.liste_course.hasMany(db.user, { foreignKey: "userId" });
 db.liste_recette.hasMany(db.user, { foreignKey: "userId" });
 
 db.facture.hasOne(db.paiement, { foreignkey: "paiementId" });
 
-db.recette.belongsToMany(db.liste_recette, { through: 'composer', foreignKey: "recetteId" });
-db.liste_recette.belongsToMany(db.recette, { through: 'composer', foreignKey: "liste_recetteId" });
+db.recette.belongsToMany(db.liste_recette, {
+    through: "composer",
+    foreignKey: "recetteId",
+});
+db.liste_recette.belongsToMany(db.recette, {
+    through: "composer",
+    foreignKey: "liste_recetteId",
+});
 
 db.recette.hasMany(db.cat_recette, { foreignKey: "cat_recetteId" });
 db.ingredient.hasMany(db.cat_ingredient, { foreignKey: "cat_ingredientId" });
@@ -104,18 +129,41 @@ db.image.hasOne(db.ingredient, { foreignkey: "ingredientId" });
 db.image.hasOne(db.cat_recette, { foreignkey: "cat_recetteId" });
 db.image.hasOne(db.cat_ingredient, { foreignkey: "cat_ingredientId" });
 
-db.recette.belongsToMany(db.materiel, { through: 'utiliser', foreignKey: "recetteId" });
-db.materiel.belongsToMany(db.recette, { through: 'utiliser', foreignKey: "materielId" });
+db.recette.belongsToMany(db.materiel, {
+    through: "utiliser",
+    foreignKey: "recetteId",
+});
+db.materiel.belongsToMany(db.recette, {
+    through: "utiliser",
+    foreignKey: "materielId",
+});
 
-db.recette.belongsToMany(db.ingredient, { through: 'contenir', foreignKey: "recetteId" });
-db.ingredient.belongsToMany(db.recette, { through: 'contenir', foreignKey: "ingredientId" });
+db.recette.belongsToMany(db.ingredient, {
+    through: "contenir",
+    foreignKey: "recetteId",
+});
+db.ingredient.belongsToMany(db.recette, {
+    through: "contenir",
+    foreignKey: "ingredientId",
+});
 
-db.allergene.belongsToMany(db.ingredient, { through: 'inclure', foreignKey: "allergeneId" });
-db.ingredient.belongsToMany(db.allergene, { through: 'inclure', foreignKey: "ingredientId" });
+db.allergene.belongsToMany(db.ingredient, {
+    through: "inclure",
+    foreignKey: "allergeneId",
+});
+db.ingredient.belongsToMany(db.allergene, {
+    through: "inclure",
+    foreignKey: "ingredientId",
+});
 
-db.liste_course.belongsToMany(db.ingredient, { through: 'lister', foreignKey: "liste_courseId" });
-db.ingredient.belongsToMany(db.liste_course, { through: 'lister', foreignKey: "ingredientId" });
-
+db.liste_course.belongsToMany(db.ingredient, {
+    through: "lister",
+    foreignKey: "liste_courseId",
+});
+db.ingredient.belongsToMany(db.liste_course, {
+    through: "lister",
+    foreignKey: "ingredientId",
+});
 
 db.dbinfo = dbinfo;
 db.Sequelize = Sequelize;
