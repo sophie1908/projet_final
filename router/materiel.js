@@ -3,11 +3,11 @@ var router = express.Router();
 var db = require("../database/db");
 
 
-router.get("/rec_pref", (req, res) => {
-    db.pref_alimentaire.findAll()
-        .then((pref) => {
+router.get("/rec_materiel", (req, res) => {
+    db.materiel.findAll()
+        .then((materiel) => {
             res.json({
-                pref: pref
+                materiel: materiel
             })
         }).catch((err) => {
             res.json(err)

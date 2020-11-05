@@ -11,6 +11,11 @@ module.exports = (dbinfo, Sequelize) => {
                 allowNull: true
             },
 
+            temps: {
+                type: Sequelize.DataTypes.TIME,
+                allowNull: true
+            },
+
             niveau_cuisine: {
                 type: Sequelize.DataTypes.TINYINT(1),
                 allowNull: true
@@ -19,7 +24,14 @@ module.exports = (dbinfo, Sequelize) => {
             cout_pers: {
                 type: Sequelize.DataTypes.DECIMAL(5),
                 allowNull: false
+            },
+
+            pdf: {
+                type: Sequelize.DataTypes.TEXT,
+                allowNull: false
             }
+
+
         }, {
             timestamps: true,
             underscored: true

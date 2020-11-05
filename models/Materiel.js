@@ -12,7 +12,7 @@ module.exports = (dbinfo, Sequelize) => {
             },
 
             image: {
-                type: Sequelize.DataTypes.TEXT,
+                type: Sequelize.DataTypes.STRING(60),
                 allowNull: false
             },
 

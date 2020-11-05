@@ -20,7 +20,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: false }));
 
 app.use("/user", require("./router/user"));
-app.use("/pref_alimentaire", require("./router/pref_alimentaire"));
+app.use("/materiel", require("./router/materiel"));
 
 app.listen(port, () => {
     console.log(`It's ok darling http://${hostname}:${port}`);

@@ -77,7 +77,7 @@ router.post("/register", (req, res) => {
         });
 });
 
-router.post("/registerparam1", (req, res) => {
+/* router.post("/registerparam1", (req, res) => {
     console.log(req.body);
     db.user
         .findOne({
@@ -88,9 +88,8 @@ router.post("/registerparam1", (req, res) => {
             user
                 .update({
                     personne: req.body.personne,
-                    petit_dej: req.body.petit_dej,
-                    dej: req.body.dej,
-                    diner: req.body.diner,
+                    repas: req.body.repas,
+
                 })
                 .then((user) => {
                     res.json(user);
@@ -101,31 +100,10 @@ router.post("/registerparam1", (req, res) => {
         });
 });
 
-router.post("/registerparam1", (req, res) => {
-    console.log(req.body);
-    db.user
-        .findOne({
-            where: { email: req.body.email },
-        })
-        .then((user) => {
-            user
-                .update({
-                    personne: req.body.personne,
-                    petit_dej: req.body.petit_dej,
-                    dej: req.body.dej,
-                    diner: req.body.diner,
-                })
-                .then((user) => {
-                    res.json(user);
-                });
-        })
-        .catch((err) => {
-            res.json({ error: err });
-        });
-});
-
+ */
 router.post("/registerfinal", (req, res) => {
-    var idpref = req.body.pref;
+
+    var idmateriel = req.body.materiel;
 
     db.user
         .findOne({
@@ -134,13 +112,26 @@ router.post("/registerfinal", (req, res) => {
         })
         .then((user) => {
             user
-                .addPref_alimentaires(idpref)
-                .then((users) => {
-                    res.json(users);
+                .update({
+                    personne: req.body.personne,
+                    repas: req.body.repas,
+
+                })
+                .then((user) => {
+                    user
+
+                        .addMateriels(idmateriel)
+                        .then((users) => {
+                            res.json(users);
+                        })
+                        .catch((err) => {
+                            res.json(err);
+                        });
+
                 })
                 .catch((err) => {
                     res.json(err);
-                });
+                })
         })
         .catch((err) => {
             res.json(err);
