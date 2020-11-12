@@ -16,11 +16,6 @@ module.exports = (dbinfo, Sequelize) => {
                 allowNull: true
             },
 
-            niveau_cuisine: {
-                type: Sequelize.DataTypes.TINYINT(1),
-                allowNull: true
-            },
-
             cout_pers: {
                 type: Sequelize.DataTypes.DECIMAL(5),
                 allowNull: false
@@ -29,7 +24,11 @@ module.exports = (dbinfo, Sequelize) => {
             pdf: {
                 type: Sequelize.DataTypes.TEXT,
                 allowNull: false
-            }
+            },
+            image: {
+                type: Sequelize.DataTypes.TEXT,
+                allowNull: false
+            },
 
 
         }, {

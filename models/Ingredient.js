@@ -14,10 +14,19 @@ module.exports = (dbinfo, Sequelize) => {
                 type: Sequelize.DataTypes.TEXT,
                 allowNull: true
             },
-            cal: {
+            unite: {
+                type: Sequelize.DataTypes.STRING(60),
+                allowNull: true
+            },
+
+            quantite: {
                 type: Sequelize.DataTypes.INTEGER,
                 allowNull: true
-            }
+            },
+            prix: {
+                type: Sequelize.DataTypes.INTEGER,
+                allowNull: true
+            },
 
         }, {
             timestamps: true,

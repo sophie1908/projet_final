@@ -33,7 +33,6 @@ db.cat_recette = require("../models/Cat_recette")(dbinfo, Sequelize);
 db.choisir = require("../models/Choisir")(dbinfo, Sequelize);
 db.composer = require("../models/Composer")(dbinfo, Sequelize);
 db.contenir = require("../models/Contenir")(dbinfo, Sequelize);
-db.image = require("../models/Image")(dbinfo, Sequelize);
 db.inclure = require("../models/Inclure")(dbinfo, Sequelize);
 db.ingredient = require("../models/Ingredient")(dbinfo, Sequelize);
 db.liste_course = require("../models/Liste_course")(dbinfo, Sequelize);
@@ -44,7 +43,6 @@ db.prix_ingredient = require("../models/Prix_ingredient")(dbinfo, Sequelize);
 db.recette = require("../models/Recette")(dbinfo, Sequelize);
 db.requier = require("../models/Requier")(dbinfo, Sequelize);
 db.user = require("../models/User")(dbinfo, Sequelize);
-db.utiliser = require("../models/Utiliser")(dbinfo, Sequelize);
 
 
 /*
@@ -96,21 +94,17 @@ db.liste_recette.belongsToMany(db.recette, {
     foreignKey: "liste_recetteId",
 });
 
-db.recette.hasMany(db.cat_recette, { foreignKey: "cat_recetteId" });
-db.ingredient.hasMany(db.cat_ingredient, { foreignKey: "cat_ingredientId" });
-db.ingredient.hasMany(db.prix_ingredient, { foreignKey: "prix_ingredientId" });
+db.cat_recette.hasMany(db.recette, { foreignKey: "cat_recetteId" });
+db.cat_ingredient.hasMany(db.ingredient, { foreignKey: "cat_ingredientId" });
+db.prix_ingredient.hasMany(db.ingredient, { foreignKey: "prix_ingredientId" });
 
-db.image.hasOne(db.recette, { foreignkey: "recetteId" });
-db.image.hasOne(db.ingredient, { foreignkey: "ingredientId" });
-db.image.hasOne(db.cat_recette, { foreignkey: "cat_recetteId" });
-db.image.hasOne(db.cat_ingredient, { foreignkey: "cat_ingredientId" });
 
 db.recette.belongsToMany(db.materiel, {
-    through: "utiliser",
+    through: "utilisers",
     foreignKey: "recetteId",
 });
 db.materiel.belongsToMany(db.recette, {
-    through: "utiliser",
+    through: "utilisers",
     foreignKey: "materielId",
 });
 

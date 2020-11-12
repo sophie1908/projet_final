@@ -77,30 +77,6 @@ router.post("/register", (req, res) => {
         });
 });
 
-/* router.post("/registerparam1", (req, res) => {
-    console.log(req.body);
-    db.user
-        .findOne({
-            include: { all: true },
-            where: { email: req.body.email },
-        })
-        .then((user) => {
-            user
-                .update({
-                    personne: req.body.personne,
-                    repas: req.body.repas,
-
-                })
-                .then((user) => {
-                    res.json(user);
-                });
-        })
-        .catch((err) => {
-            res.json({ error: err });
-        });
-});
-
- */
 router.post("/registerfinal", (req, res) => {
 
     var idmateriel = req.body.materiel;
@@ -183,6 +159,19 @@ router.post("/login", (req, res) => {
             } else {
                 return res.status(520).json("cette utilisateur n'existe pas");
             }
+        })
+        .catch((err) => {
+            res.json("test error" + err);
+        });
+});
+
+router.get("/rec_user/:email", (req, res) => {
+    db.user
+        .findOne({
+            where: { email: req.params.email },
+        })
+        .then((user) => {
+            res.status(200).json({ user: user });
         })
         .catch((err) => {
             res.json("test error" + err);

@@ -21,6 +21,8 @@ app.use(bodyparser.urlencoded({ extended: false }));
 
 app.use("/user", require("./router/user"));
 app.use("/materiel", require("./router/materiel"));
+app.use("/recette", require("./router/recette"));
+app.use("/ingredient", require("./router/ingredient"));
 
 app.listen(port, () => {
     console.log(`It's ok darling http://${hostname}:${port}`);
