@@ -6,6 +6,7 @@ router.post("/new_recette", (req, res) => {
 
     var idmateriel = req.body.materiel;
     var idingredient = req.body.ingredient;
+    var quantite = req.body.quantite
 
     db.recette.findOne({
             where: { nom: req.body.nom }
@@ -27,7 +28,7 @@ router.post("/new_recette", (req, res) => {
                             .addMateriels(idmateriel)
                             .then((recettes) => {
                                 recette
-                                    .addIngredients(idingredient)
+                                    .addIngredients(idingredient, { through: { quantite: quantite } })
                                     .then((recettes) => {
                                         res.json(recettes);
                                     })
