@@ -5,6 +5,8 @@ const Express = require("express"),
 router.post("/new_recette", (req, res) => {
 
     var idmateriel = req.body.materiel;
+    var idingredient = req.body.ingredient;
+
     db.recette.findOne({
             where: { nom: req.body.nom }
         })
@@ -16,29 +18,42 @@ router.post("/new_recette", (req, res) => {
                         temps: req.body.temps,
                         cout_pers: req.body.cout_pers,
                         pdf: req.body.pdf,
-                        image: req.body.image
+                        image: req.body.image,
+                        cat_recetteId: req.body.cat_recette
                     })
                     .then((recette) => {
                         console.log(recette);
                         recette
                             .addMateriels(idmateriel)
                             .then((recettes) => {
-                                res.json(recettes);
+                                recette
+                                    .addIngredients(idingredient)
+                                    .then((recettes) => {
+                                        res.json(recettes);
+                                    })
+                                    .catch((err) => {
+                                        res.json(err);
+                                    })
                             })
-                            .catch((err) => {
-                                res.json(err);
-                            });
+
+                        .catch((err) => {
+                            res.json(err);
+                        })
 
                     })
-                    .catch((err) => {
-                        res.json(err);
-                    })
+
             } else {
                 res.json(" déja dans la base ");
             }
         })
+
+    .catch((err) => {
+            res.json(err);
+            console.log(err)
+        })
         .catch((err) => {
             res.json(err);
+            console.log(err)
         })
 });
 

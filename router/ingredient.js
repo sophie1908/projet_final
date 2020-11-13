@@ -18,6 +18,7 @@ router.post("/new_ingredient", (req, res) => {
                         quantite: req.body.quantite,
                         prix: req.body.prix,
                         cat_ingredientId: req.body.cat_ingredient
+
                     })
                     .then((ingredient) => {
                         console.log(ingredient);
