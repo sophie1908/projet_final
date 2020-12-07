@@ -284,4 +284,36 @@ router.post("/updatepassword", (req, res) => {
         });
 });
 
+router.get("/user_recette_semaine/:email", (req, res) => {
+
+    db.user
+        .findOne({
+            where: { email: req.params.email },
+            include: [{ model: db.materiel, include: [{ model: db.recette }], }],
+
+
+        })
+        .then((user) => {
+            if (user) {
+                res.json(user);
+
+            } else { res.json("il n'y a pas de recettes avec ses matériels") }
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router;
