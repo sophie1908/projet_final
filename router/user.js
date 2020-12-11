@@ -142,7 +142,7 @@ router.put("/update/:email", (req, res) => {
 });
 router.put("/update_personne/:email", (req, res) => {
     db.user.findOne({
-            where: { email: req.body.email },
+            where: { email: req.params.email },
         })
         .then((user) => {
             user.update({
@@ -155,6 +155,25 @@ router.put("/update_personne/:email", (req, res) => {
                     res
                         .status(402)
                         .send("impossible de mettre à jour le nombre de personne" + err);
+                });
+        })
+})
+
+router.put("/update_repas/:email", (req, res) => {
+    db.user.findOne({
+            where: { email: req.params.email },
+        })
+        .then((user) => {
+            user.update({
+                    repas: req.body.repas
+                })
+                .then((useritem) => {
+                    res.status(200).json(useritem);
+                })
+                .catch((err) => {
+                    res
+                        .status(402)
+                        .send("impossible de mettre à jour le nombre de repas" + err);
                 });
         })
 })
