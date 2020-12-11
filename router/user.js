@@ -114,10 +114,10 @@ router.post("/registerfinal", (req, res) => {
         });
 });
 
-router.put("/update/:id", (req, res) => {
+router.put("/update/:email", (req, res) => {
     db.user
         .findOne({
-            where: { id: req.params.id },
+            where: { email: req.params.email },
         })
         .then((user) => {
             user
@@ -140,6 +140,24 @@ router.put("/update/:id", (req, res) => {
                 });
         });
 });
+router.put("/update_personne/:email", (req, res) => {
+    db.user.findOne({
+            where: { email: req.body.email },
+        })
+        .then((user) => {
+            user.update({
+                    personne: req.body.personne
+                })
+                .then((useritem) => {
+                    res.status(200).json(useritem);
+                })
+                .catch((err) => {
+                    res
+                        .status(402)
+                        .send("impossible de mettre à jour le nombre de personne" + err);
+                });
+        })
+})
 
 router.post("/login", (req, res) => {
     db.user
