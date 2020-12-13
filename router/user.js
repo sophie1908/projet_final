@@ -206,6 +206,7 @@ router.get("/rec_user/:email", (req, res) => {
     db.user
         .findOne({
             where: { email: req.params.email },
+            include: [{ model: db.materiel }],
         })
         .then((user) => {
             res.status(200).json({ user: user });
@@ -322,7 +323,7 @@ router.post("/updatepassword", (req, res) => {
 });
 
 router.get("/user_recette_semaine/:email", (req, res) => {
-
+    debugger
     db.user
         .findOne({
             where: { email: req.params.email },
