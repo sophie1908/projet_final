@@ -78,6 +78,22 @@ router.get("/all_recette", (req, res) => {
         });
 });
 
+router.get("/findBylike/:nom", (req, res) => {
+    db.recette.findAll({
+            where: {
+                nom: {
+                    [Op.like]: '%' + req.params.nom + '%'
+                }
+            },
+        })
+        .then(recette => {
+            res.status(200).json({ recette: recette })
+        })
+        .catch(err => {
+            res.json(err);
+        })
+});
+
 
 
 module.exports = router;
