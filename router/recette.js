@@ -98,6 +98,19 @@ router.get("/findBylike/:nom", (req, res) => {
             res.json(err);
         })
 });
+router.get("/rec_recette/:id", (req, res) => {
+    db.recette
+        .findOne({
+            where: { id: req.params.id },
+            include: [{ model: db.materiel }],
+        })
+        .then((recette) => {
+            res.status(200).json({ recette: recette });
+        })
+        .catch((err) => {
+            res.json("test error" + err);
+        });
+});
 
 
 
