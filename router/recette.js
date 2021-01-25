@@ -82,6 +82,26 @@ router.get("/all_recette", (req, res) => {
             res.json(err);
         });
 });
+router.get("/recette_cat/:id", (req, res) => {
+    db.cat_recette
+        .findOne({
+            where: { id: req.params.id },
+            include: { all: true },
+        })
+        .then((cat_recette) => {
+            if (cat_recette) {
+                res.status(200).json({
+                    cat_recette: cat_recette,
+                });
+            } else {
+                res.json("il n'y a pas de cat_recettes");
+
+            }
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
 
 router.get("/findBylike/:nom", (req, res) => {
     db.recette.findAll({
@@ -102,7 +122,8 @@ router.get("/rec_recette/:id", (req, res) => {
     db.recette
         .findOne({
             where: { id: req.params.id },
-            include: [{ model: db.materiel }],
+            include: { all: true },
+
         })
         .then((recette) => {
             res.status(200).json({ recette: recette });
